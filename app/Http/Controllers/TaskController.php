@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Task;
 class TaskController extends Controller
 {
     private $tasks;
@@ -58,8 +58,9 @@ class TaskController extends Controller
 
     public function index()
     {
+        
         $pageTitle = 'Task List';
-        $tasks = $this->tasks;
+        $tasks = Task::all();
         return view('tasks.index', [
             'pageTitle' => $pageTitle,
             'tasks' => $tasks
@@ -67,10 +68,9 @@ class TaskController extends Controller
     }
     public function edit($id)
     {
+        
         $pageTitle = 'Edit Task';
-        $tasks = $this->tasks;
-
-        $task = $tasks[$id - 1];
+        $task = Task::find($id);
 
         return view('tasks.edit', ['pageTitle' => $pageTitle, 'task' => $task]);
     }
@@ -81,4 +81,86 @@ class TaskController extends Controller
 
         return view('tasks.create', ['pageTitle' => $pageTitle, ]);
     }
+
+    public function store(Request $request)
+    {
+        // dd($request->all());
+        $request->validate(
+            [
+                'name' => 'required',
+                'due_date' => 'required',
+                'status' => 'required',
+            ],
+            $request->all()
+        );
+        Task::create([
+        'name' => $request->name,
+        'detail' => $request->detail,
+        'due_date' => $request->due_date,
+        'status' => $request->status,
+     ]);
+     return redirect()->route('tasks.index');
+    }
+
+    public function update(Request $request, $id){
+        // dd($request->all());
+        $request->validate(
+            [
+                'name' => 'required',
+                'due_date' => 'required',
+                'status' => 'required',
+            ],
+            $request->all()
+        );
+        $task = Task::find($id); 
+
+        // $task->name = 'Belajar Eloquent';
+        // $task->save();
+
+        $task->update([
+            'name' => $request->name,
+            'detail' => $request->detail,
+            'due_date' => $request->due_date,
+            'status' => $request->status,
+        ]);
+        return redirect()->route('tasks.index');
+
+    }
+
+
+    public function delete($id)
+    {
+        $pageTitle = 'Delete Task';
+        $task = Task::find($id);
+
+        return view('tasks.delete', ['pageTitle' => $pageTitle, 'task' => $task]);
+
+
+    }
+
+    public function destroy($id)
+    {
+        $task = Task::find($id);
+        $task->delete();
+        
+        return redirect()->route('tasks.index');
+    }
+
+    public function progres() 
+    {
+        $title = 'Task Progres';
+        $semuatask = Task::all();
+        $tasktertentu = $semuatask->groupBy('status');
+        // echo $tasktertentu;
+        $tasks = [
+            Task::STATUS_NOT_STARTED => $tasktertentu -> get(Task::STATUS_NOT_STARTED, []),
+            Task::STATUS_IN_PROGRESS=> $tasktertentu -> get(Task::STATUS_IN_PROGRESS, []),
+            Task::STATUS_COMPLETED=> $tasktertentu -> get(Task::STATUS_COMPLETED, []),
+            Task::STATUS_IN_REVIEW=> $tasktertentu -> get(Task::STATUS_IN_REVIEW, []),
+        ];
+        // dump($tasks);
+        return view('tasks.progress', ['pageTitle' => $title, 'tasks' => $tasks]);
+    }
+
+
 }

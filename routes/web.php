@@ -2,16 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
     return view('home');})
@@ -21,8 +12,34 @@ Route::get('/layouts', function () {
     return view('layouts.master');
 });
 
-Route::get('/tasks/', [TaskController::class, 'index'])
-->name('tasks.index'); 
- // 
- Route::get('/tasks/{id}/edit', [TaskController::class, 
- 'edit'])->name('tasks.edit');
+// Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index'); 
+// Route::get('/tasks/{id}/edit', 'edit')->name('tasks.edit');
+// Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create'); 
+// Route::post('/', [TaskController::class,'store'])->name('task.store');
+// Route::put('/tasks/{id}/update', [TaskController::class, 'update'])->name('tasks.update');
+// Route::get('/tasks/{id}/delete', [TaskController::class, 'delete'])->name('tasks.delete');
+// Route::delete('/tasks/{id}/destroy', [TaskController::class, 'destroy'])->name('tasks.destroy');
+// Route::get('/tasks/progress', [TaskController::class, 'progres'])->name('tasks.progress');
+
+ Route::prefix('tasks')
+ ->name('tasks.')
+ ->controller(TaskController::class)
+ ->group(function () {
+    Route::get('/', 'index')->name('index'); 
+    Route::get('/{id}/edit', 'edit')->name('edit');
+    Route::get('/create', 'create')->name('create'); 
+    Route::post('/', 'store')->name('store');
+    Route::put('/{id}/update', 'update')->name('update');
+    Route::get('/{id}/delete', 'delete')->name('delete');
+    Route::delete('/{id}/destroy', 'destroy')->name('destroy');
+    Route::get('/progress', 'progres')->name('progress');
+    Route::patch('{id}/move', 'move')->name('move');
+
+
+ });
+
+ Route::name('auth.')->controller(AuthController::class)->group(function(){
+    Route::get('signup','signupForm')->name('signupForm');
+    Route::post('signup','signup')->name('signup');
+ }
+);

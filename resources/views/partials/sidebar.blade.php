@@ -5,8 +5,12 @@
         <p class="sidebar-text">Home</p>
       </a>
       <a class="sidebar-link" href="{{ route('tasks.index') }}">
+
         <span class="material-icons sidebar-icon">list</span>
         <p class="sidebar-text">Task List</p>
       </a>
+      <a class="sidebar-link" href="{{ route('tasks.progress') }}">
+        <span class="material-icons sidebar-icon">check_box</span>
+        <p class="sidebar-text">Task Progress</p>
     </div>
   </div>

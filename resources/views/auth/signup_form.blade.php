@@ -13,5 +13,7 @@
             <div class='form-item'><label>password</label> <input class='form-input' name='password'/>  </div>
             <button type='submit' class='form-button'>submit</button>
         </form>
+        <p class="auth-link">Already have an account? <a href="{{ route('auth.login') }}">Login here</a></p>
+ 
     </div>
 @endsection

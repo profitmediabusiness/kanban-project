@@ -16,6 +16,7 @@
   <div class="main">
     @yield('main')
   </div>
+</div>
 </body>
 
 </html>

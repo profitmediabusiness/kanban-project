@@ -5,7 +5,7 @@
 @section('main')
 <div class="form-container">
     <h1 class="form-title">{{ $pageTitle }}</h1>
-    <form class="form" method="POST" action="{{ route('task.store') }}">
+    <form class="form" method="POST" action="{{ route('tasks.store') }}">
       @csrf
       <div class="form-item">
         <label>Name:</label>

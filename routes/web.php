@@ -4,9 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AuthController;
 
-Route::get('/', function () {
-    return view('home');})
-->name('home')->middleware('auth');
+// Route::get('/', function () {
+//     return view('home');})
+// ->name('home')->middleware('auth');
+Route::get('/', [TaskController::class, 'home'])->name('home')->middleware('auth');
 
 Route::get('/layouts', function () {
     return view('layouts.master');
@@ -34,7 +35,7 @@ Route::get('/layouts', function () {
     Route::get('/{id}/delete', 'delete')->name('delete');
     Route::delete('/{id}/destroy', 'destroy')->name('destroy');
     Route::get('/progress', 'progres')->name('progress');
-    Route::patch('{id}/move', 'move')->name('move');
+    Route::patch('{id}/move', 'move')->name('move'); 
 
 
  });

@@ -57,7 +57,7 @@
           <div class="alert-danger">{{ $message }}</div>
         @enderror
       </div>
-      <button type="submit" class="form-button">Submit</button>
+      <button type="submit" class="form-button" action="{{ route('tasks.edit', ['id' => $task->id, 'edittasksprogress' => 'task.progress']) }}">Submit</button>
     </form>
   </div>
 @endsection

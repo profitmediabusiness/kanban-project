@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
+use Illuminate\Support\Facades\Auth;
 class TaskController extends Controller
 {
     private $tasks;
@@ -56,6 +57,16 @@ class TaskController extends Controller
         ];
     }
 
+    public function home(){
+        $tasks = Task::where('user_id', auth()->id())->get();
+        $complitedtask = $tasks ->where('status', Task::STATUS_COMPLETED)->count();
+        $uncomplitedtask = $tasks ->whereNotIn('status', Task::STATUS_COMPLETED)->count();
+
+        return view('home', ['sudahselesai'=>$complitedtask, 
+    'belumselesai'=> $uncomplitedtask
+    ]);
+    }
+
     public function index()
     {
         
@@ -66,11 +77,15 @@ class TaskController extends Controller
             'tasks' => $tasks
         ]);
     }
-    public function edit($id)
+    public function edit($id, Request $request)
     {
         
         $pageTitle = 'Edit Task';
         $task = Task::find($id);
+
+        if($request->has('edittasksprogress')&& $request->edittasksprogress== 'task.progress'){
+            return redirect()->route('tasks.progress');
+        }
 
         return view('tasks.edit', ['pageTitle' => $pageTitle, 'task' => $task]);
     }
@@ -98,6 +113,7 @@ class TaskController extends Controller
         'detail' => $request->detail,
         'due_date' => $request->due_date,
         'status' => $request->status,
+        'user_id' =>Auth::user()->id,
      ]);
      return redirect()->route('tasks.index');
     }
@@ -161,6 +177,22 @@ class TaskController extends Controller
         // dump($tasks);
         return view('tasks.progress', ['pageTitle' => $title, 'tasks' => $tasks]);
     }
+
+
+    public function move(int $id, Request $request)
+{
+    $task = Task::findOrFail($id);
+
+    $task->update([
+        'status' => $request->status,
+    ]);
+    if($request->has('movetasklist')&& $request->movetasklist== 'task.list'){
+        return redirect()->route('tasks.index');
+    }
+
+    return redirect()->route('tasks.progress');
+}
+
 
 
 }

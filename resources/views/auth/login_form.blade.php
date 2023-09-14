@@ -15,9 +15,7 @@
         @enderror
       </div>
 
-      <div class="form-item">
-        <label>Password:</label>
-        <input class="form-input" type="password" value="" name="password" required>
+      <div class="form-item"><label>Password:</label><input class="form-input" type="password"  name="password" required>
         @error('password')
           <div class="alert-danger">{{ $message }}</div>
         @enderror

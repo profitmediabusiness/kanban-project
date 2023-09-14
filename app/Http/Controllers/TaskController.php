@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+
 class TaskController extends Controller
 {
     private $tasks;
@@ -83,6 +85,8 @@ class TaskController extends Controller
         $pageTitle = 'Edit Task';
         $task = Task::find($id);
 
+        Gate::authorize('update', $task);
+
         if($request->has('edittasksprogress')&& $request->edittasksprogress== 'task.progress'){
             return redirect()->route('tasks.progress');
         }
@@ -133,6 +137,8 @@ class TaskController extends Controller
         // $task->name = 'Belajar Eloquent';
         // $task->save();
 
+        Gate::authorize('update', $task);
+
         $task->update([
             'name' => $request->name,
             'detail' => $request->detail,
@@ -148,6 +154,9 @@ class TaskController extends Controller
     {
         $pageTitle = 'Delete Task';
         $task = Task::find($id);
+        
+
+        Gate::authorize('delete', $task);
 
         return view('tasks.delete', ['pageTitle' => $pageTitle, 'task' => $task]);
 
@@ -157,8 +166,9 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = Task::find($id);
+        Gate::authorize('delete', $task);
+
         $task->delete();
-        
         return redirect()->route('tasks.index');
     }
 
@@ -182,6 +192,11 @@ class TaskController extends Controller
     public function move(int $id, Request $request)
 {
     $task = Task::findOrFail($id);
+
+    // Gate::authorize('move', $task);
+    if (!Gate::allows('move', $task)) {
+        abort(403);
+    }
 
     $task->update([
         'status' => $request->status,

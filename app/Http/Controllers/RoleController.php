@@ -53,11 +53,11 @@ class RoleController extends Controller
         $roles = Role::find($id);
         // $this -> authorize('update', $roles);
         $permissions = Permission::all();
-
+// dd($permissions);
     return view('roles.edit', [
         'pageTitle' => $pageTitle,
         'role' => $roles,
-        'permissions ' => $permissions
+        'permissions' => $permissions
     ]);
 
  }
@@ -74,11 +74,28 @@ class RoleController extends Controller
 
  public function destroy($id){
 
+    $roles = Role::find($id);
+
+    DB::beginTransaction();
+    try {
+        $roles->permissions()->detach();
+        $roles->delete();
+
+        DB::commit();
+
+        return redirect()->route('roles.index');
+    } 
+    catch (\Throwable $th) {
+        DB::rollBack();
+        throw $th;
+    }
+
+
  }
 
  public function delete($id){
 
-    $pageTitle = 'Edit Role';
+    $pageTitle = 'Delete Role';
         $roles = Role::find($id);
 
         return view('roles.delete',[
@@ -89,6 +106,27 @@ class RoleController extends Controller
  }
 
  public function update($id, Request $request){
+
+    $request->validate([
+        'name' => ['required'],
+        'permissionIds' => ['required'],
+    ]);
+    $roles = Role::find($id);
+
+    DB::beginTransaction();
+    try {
+        $roles->update([
+            'name' => $request->name,
+        ]);
+        $roles->permissions()->sync($request->permissionIds);
+
+        DB::commit();
+
+        return redirect()->route('roles.index');
+    } catch (\Throwable $th) {
+        DB::rollBack();
+        throw $th;
+    }
 
  }
 

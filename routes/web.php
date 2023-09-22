@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 
 // Route::get('/', function () {
 //     return view('home');})
@@ -46,7 +47,7 @@ Route::get('/layouts', function () {
     ->group(function(){
         Route::middleware('guest')->group(function ()
         { 
-       Route::get('signup','signupForm')->name('signupForm');
+      Route::get('signup','signupForm')->name('signupForm');
       Route::post('signup','signup')->name('signup');
       Route::get('login', 'loginForm')->name('loginForm');
       Route::post('login', 'login')->name('login');
@@ -75,4 +76,18 @@ Route::prefix('roles')
         Route::put('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
+    });
+
+Route::get('/login2', function () {
+  return view('auth.login2');
+});
+
+Route::prefix('users')
+    ->name('users.')
+    ->middleware('auth')
+    ->controller(UserController::class)
+    ->group(function () {
+        Route::get('', 'index')->name('index');
+        Route::get('{id}/edit-role', 'editRole')->name('editRole');
+        Route::put('{id}/update-role', 'updateRole')->name('updateRole');
     });

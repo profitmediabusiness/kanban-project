@@ -10,20 +10,6 @@ class TaskPolicy
     /**
      * Create a new policy instance.
      */
-    public function update($user, $task)
-    {
-        return $user->id == $task->user_id;
-    }
-
-    public function delete($user, $task)
-    {
-        return $user->id == $task->user_id;
-    }
-
-    public function move($user, $task)
-    {
-        return $user->id == $task->user_id;
-    }
     public function __construct()
     {
         //
@@ -39,7 +25,7 @@ class TaskPolicy
 
         $permissions = $this->getUserPermissions($user);
 
-        if ($permissions->contains('view-any-task')) {
+        if ($permissions->contains('view-any-tasks')) {
             return true;
         }
 
@@ -79,4 +65,8 @@ public function deleteAnyTask($user)
         ->flatten()
         ->pluck('name');
     }
+
+
+
+
 }

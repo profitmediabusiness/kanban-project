@@ -28,7 +28,7 @@
         @enderror
       </div>
 
-      <button type="submit" class="form-button">Submit</button>
+      <button type="submit" class="form-button">Login</button>
     </form>
 
     <p class="auth-link">You don't have an account? <a href="{{ route('auth.signup') }}">Register here</a></p>

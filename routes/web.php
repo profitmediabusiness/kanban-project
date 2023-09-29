@@ -51,6 +51,7 @@ Route::get('/layouts', function () {
       Route::post('signup','signup')->name('signup');
       Route::get('login', 'loginForm')->name('loginForm');
       Route::post('login', 'login')->name('login');
+      // Route::get('login2', 'login2')->name('login2');
         });
       
 
@@ -58,11 +59,11 @@ Route::get('/layouts', function () {
       {
         Route::post('logout', 'logout')->name('logout');
       });
-      
-      
- }
-);
+ });
 
+Route::get('/login2', function () {
+  return view('auth.login2');
+});
 
 Route::prefix('roles')
     ->name('roles.')
@@ -77,10 +78,6 @@ Route::prefix('roles')
         Route::get('{id}/delete', 'delete')->name('delete');
         Route::delete('{id}/destroy', 'destroy')->name('destroy');
     });
-
-Route::get('/login2', function () {
-  return view('auth.login2');
-});
 
 Route::prefix('users')
     ->name('users.')

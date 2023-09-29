@@ -13,52 +13,8 @@ class TaskController extends Controller
 
     public function __construct()
     {
-        $this->tasks = [
-            (object) [
-                'id' => 1,
-                'name' => 'Develop Final Project',
-                'detail' => 'Kanban project using PHP and Laravel',
-                'due_date' => '2023-04-30',
-                'status' => 'not_started',
-            ],
-            (object) [
-                'id' => 2,
-                'name' => 'Lunch with Guru Domba',
-                'detail' => 'Have Nasi Padang with Guru Domba',
-                'due_date' => '2023-04-10',
-                'status' => 'not_started',
-            ],
-            (object) [
-                'id' => 3,
-                'name' => 'Learn Blade Templating',
-                'detail' => 'Complete Blade Templating material on Progate',
-                'due_date' => '2023-04-05',
-                'status' => 'in_progress',
-            ],
-            (object) [
-                'id' => 4,
-                'name' => 'Decide Plans for Lebaran holidays',
-                'detail' => 'Trip with family?',
-                'due_date' => '2023-04-21',
-                'status' => 'in_progress',
-            ],
-            (object) [
-                'id' => 5,
-                'name' => 'Develop a Laravel Project',
-                'detail' => 'Develop a Kanban app and ask Guru Domba\'s review',
-                'due_date' => '2023-04-30',
-                'status' => 'in_review',
-            ],
-            (object) [
-                'id' => 6,
-                'name' => 'Learn PHP Basics',
-                'detail' => 'Complete PHP materials on Frontend Course',
-                'due_date' => '2023-04-30',
-                'status' => 'completed',
-            ],
-        ];
-    }
 
+    }
     public function home(){
         $tasks = Task::where('user_id', auth()->id())->get();
         $complitedtask = $tasks ->where('status', Task::STATUS_COMPLETED)->count();
@@ -71,9 +27,13 @@ class TaskController extends Controller
 
     public function index()
     {
-        
         $pageTitle = 'Task List';
-        $tasks = Task::all();
+        if(!Gate::allows('viewAnyTask', Task::class)) {
+            $tasks = Task::where('user_id', Auth::id())->get();
+        } else{
+            $tasks = Task::all();
+        }
+        // dd($tasks);
         return view('tasks.index', [
             'pageTitle' => $pageTitle,
             'tasks' => $tasks
@@ -84,8 +44,10 @@ class TaskController extends Controller
         
         $pageTitle = 'Edit Task';
         $task = Task::find($id);
-
-        Gate::authorize('update', $task);
+        if(Gate::allows('performAsTaskOwner', $task)||Gate::allows('updateAnyTask', Task::class)) {
+        } else{
+            return redirect()->route('home');
+        }
 
         if($request->has('edittasksprogress')&& $request->edittasksprogress== 'task.progress'){
             return redirect()->route('tasks.progress');
@@ -154,9 +116,11 @@ class TaskController extends Controller
     {
         $pageTitle = 'Delete Task';
         $task = Task::find($id);
-        
-
-        Gate::authorize('delete', $task);
+        if(Gate::allows('performAsTaskOwner', $task)||Gate::allows('deleteAnyTask', Task::class)) {
+        } else{
+            return redirect()->route('home');
+        }
+        // Gate::authorize('delete', $task);
 
         return view('tasks.delete', ['pageTitle' => $pageTitle, 'task' => $task]);
 
@@ -175,17 +139,23 @@ class TaskController extends Controller
     public function progres() 
     {
         $title = 'Task Progres';
+        if(!Gate::allows('viewAnyTask', Task::class)) {
+            $semuatask = Task::where('user_id', Auth::id())->get();
+        } else{
         $semuatask = Task::all();
+    }
         $tasktertentu = $semuatask->groupBy('status');
-        // echo $tasktertentu;
         $tasks = [
             Task::STATUS_NOT_STARTED => $tasktertentu -> get(Task::STATUS_NOT_STARTED, []),
             Task::STATUS_IN_PROGRESS=> $tasktertentu -> get(Task::STATUS_IN_PROGRESS, []),
             Task::STATUS_COMPLETED=> $tasktertentu -> get(Task::STATUS_COMPLETED, []),
             Task::STATUS_IN_REVIEW=> $tasktertentu -> get(Task::STATUS_IN_REVIEW, []),
         ];
-        // dump($tasks);
-        return view('tasks.progress', ['pageTitle' => $title, 'tasks' => $tasks]);
+    
+        return view('tasks.progress', [
+            'pageTitle' => $title, 
+            'tasks' => $tasks
+        ]);
     }
 
 
@@ -194,9 +164,12 @@ class TaskController extends Controller
     $task = Task::findOrFail($id);
 
     // Gate::authorize('move', $task);
-    if (!Gate::allows('move', $task)) {
-        abort(403);
+    if (Gate::allows('performAsTaskOwner', $task)||Gate::allows('updateAnyTask', Task::class)) {
+        
+    } else{
+        return redirect()->route('home');
     }
+
 
     $task->update([
         'status' => $request->status,

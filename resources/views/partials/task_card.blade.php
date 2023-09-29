@@ -7,10 +7,10 @@
       @if ($task->status == 'completed')
         <div class="material-icons task-progress-card-top-checked">check_circle</div>
       @else
-        @if(!Gate::allows('move', $task))
+        {{--  @if(!Gate::allows('move', $task))  --}}
 
-          <div class="material-icons task-progress-card-top-check">check_circle</div>
-          @else
+          {{--  <div class="material-icons task-progress-card-top-check">check_circle</div>  --}}
+          {{--  @else  --}}
           <form id="set-complete-{{ $task->id }}" action="{{ route('tasks.move', ['id' => $task->id, 'status' => Task::STATUS_COMPLETED]) }}" 
             method="POST">
             @method('patch')
@@ -19,7 +19,7 @@
             </form>
 
 
-        @endif
+        {{--  @endif  --}}
       @endif
       
 
@@ -37,7 +37,7 @@
     </div>
     <div class="@if ($leftStatus) task-progress-card-left @else task-progress-card-right @endif">
       
-      @can('update', $task)
+      {{--  @can('update', $task)  --}}
       @if ($leftStatus)
       <form
         action="{{ route('tasks.move', ['id' => $task->id, 'status' => $leftStatus]) }}" 
@@ -48,9 +48,9 @@
         <button class="material-icons">chevron_left</button>
       </form>
       @endif
-      @endcan
+      {{--  @endcan  --}}
   
-      @can('update', $task)
+      {{--  @can('update', $task)  --}}
       @if ($rightStatus)
       <form
         action="{{ route('tasks.move', ['id' => $task->id, 'status' => $rightStatus]) }}"
@@ -61,6 +61,6 @@
         <button class="material-icons">chevron_right</button>
       </form>
       @endif
-      @endcan
+      {{--  @endcan  --}}
     </div>
   </div>

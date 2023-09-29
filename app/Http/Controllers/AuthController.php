@@ -64,6 +64,30 @@ public function login(Request $request)
         ]);
 }
 
+public function login2(Request $request)
+{
+    $request->validate(
+        [
+            'email' => ['required', 'email'],
+            'password' => 'required',
+        ],
+        $request->all()
+    );
+
+    $credentials = $request->only('email', 'password');
+
+    if (Auth::attempt($credentials)) {
+        return redirect()->route('home');
+    }
+
+    return redirect()
+        ->back()
+        ->withInput($request->only('email'))
+        ->withErrors([
+            'email' => 'These credentials do not match our records.',
+        ]);
+}
+
 public function logout()
 {
   Auth::logout();

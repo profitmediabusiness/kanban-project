@@ -12,7 +12,7 @@ class RoleController extends Controller
 {
     //
    public function index(){
-
+    $this->authorize('viewAllRoles', Role::class);
     $pageTitle = 'Role Lists';
         $roles = Role::all();
 
@@ -24,7 +24,7 @@ class RoleController extends Controller
     }
 
  public function store(Request $request){
-
+    $this->authorize('manageRoles', Role::class);
     $request->validate([
         'name' => ['required'],
         'permissionIds' => ['required'],
@@ -49,11 +49,10 @@ class RoleController extends Controller
     }
 
  public function edit($id){
+    $this->authorize('manageRoles', Role::class);
     $pageTitle = 'Edit Role';
         $roles = Role::find($id);
-        // $this -> authorize('update', $roles);
         $permissions = Permission::all();
-// dd($permissions);
     return view('roles.edit', [
         'pageTitle' => $pageTitle,
         'role' => $roles,
@@ -63,6 +62,7 @@ class RoleController extends Controller
  }
 
  public function create(){
+    $this->authorize('manageRoles', Role::class);
     $pageTitle = 'Add Role';
         $permissions = Permission::all();
         return view('roles.create', [
@@ -73,7 +73,7 @@ class RoleController extends Controller
  }
 
  public function destroy($id){
-
+    $this->authorize('manageRoles', Role::class);
     $roles = Role::find($id);
 
     DB::beginTransaction();
@@ -97,6 +97,7 @@ class RoleController extends Controller
 
     $pageTitle = 'Delete Role';
         $roles = Role::find($id);
+        $this->authorize('manageRoles', Role::class);
 
         return view('roles.delete',[
             'pageTitle' => $pageTitle,
@@ -106,7 +107,7 @@ class RoleController extends Controller
  }
 
  public function update($id, Request $request){
-
+    $this->authorize('manageRoles', Role::class);
     $request->validate([
         'name' => ['required'],
         'permissionIds' => ['required'],

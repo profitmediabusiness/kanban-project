@@ -6,15 +6,22 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     //
     public function index(){
         $a ='Users List';
-        $b =User::all();
-
-        return view('users.index', ['pageTitle'=>$a, 
-    'users' =>$b
+        if(!Gate::allows('viewOtherUsersAndTheirRoles', User::class)){
+            // $b = User::where()->get();
+            return redirect()->route('home');
+        } else{ 
+    }
+    $b =User::all();
+        return view('users.index', [
+            'pageTitle'=>$a, 
+            'users' =>$b
     ]);
     }
 

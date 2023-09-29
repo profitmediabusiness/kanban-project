@@ -58,13 +58,13 @@
       </div>
       <div class="table-body-owner-name">{{ $task->user->name }}</div>
       <div>
-        @can('update', $task)
+        {{--  @can('update', $task)  --}}
         <a href="{{ route('tasks.edit', ['id' => $task->id]) }}">Edit</a>
-        @endcan
+        {{--  @endcan  --}}
         
-        @can('delete', $task)
+        {{--  @can('delete', $task)  --}}
         <a href="{{ route('tasks.delete', ['id' => $task->id]) }}">Delete</a>
-        @endcan
+        {{--  @endcan  --}}
       </div>
       </div>
   @endforeach

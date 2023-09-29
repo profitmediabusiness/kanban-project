@@ -35,7 +35,10 @@
         </div>
         <div class="table-body-links">
           <a href="{{ route('roles.edit', ['id' => $role->id]) }}">Edit</a>
+          @if ($role->name=='admin')
+          @else
           <a href="{{ route('roles.delete', ['id' => $role->id]) }}">Delete</a>
+          @endif
         </div>
         </div>
       @endforeach

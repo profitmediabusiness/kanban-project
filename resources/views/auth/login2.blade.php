@@ -1,3 +1,5 @@
+@section('main')
+{{--  @section('pageTitle', $pageTitle)  --}}
 <!DOCTYPE html> 
 <html lang="en" dir="ltr">
   <head>
@@ -10,11 +12,12 @@
   <body>
     <div class="container">
       <div class="wrapper">
-        <div class="title"><span>Login Form</span></div>
-        <form action="#">
+        <div class="title"><span>Halaman Login</span></div>
+        <form method="POST" action="{{ route('auth.login2') }}">
+          
           <div class="row">
             <i class="fas fa-user"></i>
-            <input type="text" placeholder="Email or Phone" required>
+            <input type="text" value="{{ old('email') }}" placeholder="Email or Phone" required>
           </div>
           <div class="row">
             <i class="fas fa-lock"></i>
